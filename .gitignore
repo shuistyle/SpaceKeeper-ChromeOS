@@ -1,0 +1,11 @@
+# macOS and editor clutter
+.DS_Store
+.fuse_hidden*
+node_modules/
+# Never publish keys or secrets
+*.p12
+*.pfx
+*.pem
+*.key
+.env
+.env.*

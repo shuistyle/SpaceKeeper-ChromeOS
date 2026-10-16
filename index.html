@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Nothing is loaded from anywhere else, and nothing is sent anywhere. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#1c2c48">
+  <title>SpaceKeeper</title>
+  <meta name="description" content="Name, colour and jump between your ChromeOS desks.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#desks">Skip to desks</a>
+
+  <header class="top">
+    <img src="icons/icon-192.png" alt="" width="32" height="32">
+    <div class="top-text">
+      <h1>SpaceKeeper</h1>
+      <p id="current" class="current" aria-live="polite"></p>
+    </div>
+    <button id="add" class="primary" type="button" aria-keyshortcuts="Control+Alt+N">+ Add desk</button>
+  </header>
+
+  <main>
+    <p id="mode" class="mode" hidden></p>
+    <h2 id="desks-title" class="visually-hidden">Desks</h2>
+    <ul id="desks" class="grid" aria-labelledby="desks-title"></ul>
+    <p id="learning" class="hint" hidden>
+      ChromeOS doesn't let apps see every desk at once, so SpaceKeeper learns them as you use them.
+      Visit any desk that's missing (<kbd>Search</kbd> + <kbd>]</kbd>) and it will appear here.
+    </p>
+
+  <p id="status" class="status" role="status" aria-live="polite"></p>
+
+  <details class="settings">
+    <summary>Settings and help</summary>
+    <div class="settings-body">
+      <label class="switch"><input id="set-all-desks" type="checkbox"> Show SpaceKeeper on every desk</label>
+      <label class="switch"><input id="set-confirm" type="checkbox"> Ask before removing a desk</label>
+      <label class="select">Text size
+        <select id="set-text-size">
+          <option value="standard">Standard</option>
+          <option value="large">Large</option>
+          <option value="larger">Larger</option>
+          <option value="largest">Largest</option>
+        </select>
+      </label>
+
+      <h2>Using SpaceKeeper</h2>
+      <ul class="help">
+        <li><strong>Click</strong> a desk (or press <kbd>Enter</kbd>) to go to it. <kbd>1</kbd>–<kbd>9</kbd> jump to the first nine.</li>
+        <li><strong>Double-click</strong> (or press <kbd>F2</kbd> or <kbd>R</kbd>) to name it. <kbd>Enter</kbd> saves, <kbd>Esc</kbd> cancels.</li>
+        <li><strong>Right-click</strong> (or press <kbd>Shift</kbd> + <kbd>F10</kbd>, or <kbd>M</kbd>) for colour, moving and removing.</li>
+        <li><strong>Drag</strong> desks, or press <kbd>Alt</kbd> + <kbd>Shift</kbd> + arrow keys, to put them in your order.</li>
+        <li><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>N</kbd> adds a desk.</li>
+      </ul>
+      <p class="small">Names and colours are SpaceKeeper's own labels, saved only in this browser. ChromeOS doesn't let apps rename desks or change their order in Overview.</p>
+      <button id="forget-missing" type="button">Remove desks that no longer exist</button>
+    </div>
+  </details>
+
+  <!-- Right-click menu (filled in by app.js) -->
+  <div id="menu" class="menu" role="menu" hidden></div>
+  </main>
+
+  <noscript><p class="mode">SpaceKeeper needs JavaScript switched on.</p></noscript>
+</body>
+</html>

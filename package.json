@@ -1,0 +1,11 @@
+{
+  "name": "spacekeeper-chromeos",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SpaceKeeper for ChromeOS desks. No build step: the files are served as they are.",
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}

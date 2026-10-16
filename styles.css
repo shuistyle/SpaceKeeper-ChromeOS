@@ -1,0 +1,179 @@
+/* ======================================================================
+   styles.css — SpaceKeeper for ChromeOS
+   ======================================================================
+   Light and dark follow ChromeOS's setting. Text meets WCAG AAA (7:1)
+   contrast, the focus ring is thick and clear, "current" is shown by a
+   thick border AND the word "current" (never colour alone), and High
+   contrast mode (forced-colors) uses the system's own colours.
+   ====================================================================== */
+
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --text: #121a26;
+  --muted: #3c4656;         /* 9.0:1 on --surface */
+  --border: #8a94a3;
+  --accent: #0b4f8a;        /* 8.3:1 on white */
+  --accent-text: #ffffff;
+  --focus: #0b4f8a;
+  --danger: #8f1d1d;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+  --scale: 1;
+  font-size: calc(15px * var(--scale));
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #11161e;
+    --surface: #1b2230;
+    --text: #f2f5f9;
+    --muted: #c3cad6;       /* 9.6:1 on --surface */
+    --border: #5c6779;
+    --accent: #9cc8f5;      /* 9.0:1 on --surface */
+    --accent-text: #0b1a2c;
+    --focus: #9cc8f5;
+    --danger: #ffb4ab;
+    --shadow: none;
+  }
+}
+:root[data-text-size="large"]   { --scale: 1.2; }
+:root[data-text-size="larger"]  { --scale: 1.45; }
+:root[data-text-size="largest"] { --scale: 1.75; }
+
+* { box-sizing: border-box; }
+html { background: var(--bg); color: var(--text); }
+body {
+  margin: 0; padding: 12px 16px 24px;
+  font-family: system-ui, "Google Sans", Roboto, sans-serif;
+  line-height: 1.4; background: var(--bg); color: var(--text);
+}
+kbd {
+  font: inherit; font-size: 0.85em; padding: 0 0.35em;
+  border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; background: var(--surface);
+}
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 16px; top: 8px; z-index: 10; background: var(--surface); padding: 6px 10px; }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+button, select {
+  font: inherit; color: var(--text); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 0.35em 0.8em; cursor: pointer;
+  min-height: 2.25rem;
+}
+button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ----- Header ----- */
+.top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.top img { border-radius: 8px; }
+.top-text { flex: 1; min-width: 0; }
+h1 { font-size: 1.25rem; margin: 0; }
+.current { margin: 0; color: var(--muted); font-size: 0.95rem; overflow-wrap: anywhere; }
+
+.mode {
+  margin: 0 0 10px; padding: 8px 10px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--surface); font-size: 0.9rem;
+}
+.mode strong { display: block; }
+
+/* ----- Desk grid ----- */
+.grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(calc(150px * var(--scale)), 1fr));
+}
+.tile {
+  position: relative; min-height: calc(86px * var(--scale));
+  padding: 8px 10px; border-radius: 12px;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  cursor: pointer; user-select: none;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.tile:hover { border-color: var(--accent); }
+.tile.current { border: 4px solid var(--accent); padding: 5px 7px; }
+.tile.dragging { opacity: 0.5; }
+.tile.drop-before::before {
+  content: ""; position: absolute; left: -7px; top: 6px; bottom: 6px; width: 4px;
+  border-radius: 2px; background: var(--accent);
+}
+.tile-head { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.badge {
+  min-width: 1.6em; height: 1.6em; padding: 0 0.3em; border-radius: 999px;
+  display: inline-grid; place-items: center; font-size: 0.85rem;
+  border: 1px solid currentColor;
+}
+.tile.current .badge { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.symbol { font-size: 1rem; line-height: 1; }
+.spacer { flex: 1; }
+.name { font-size: 1rem; overflow-wrap: anywhere; }
+.tile.current .name { font-weight: 700; }
+.sub { font-size: 0.8rem; color: var(--muted); }
+
+/* Coloured tiles: fill, with black or white text for at least 7:1. */
+.tile.colored { background: var(--fill); border-color: color-mix(in srgb, var(--fill) 60%, black); }
+.tile.colored, .tile.colored .sub { color: var(--ink); }
+.tile.colored .badge { border-color: var(--ink); }
+.tile.colored.current { border-color: var(--ink); }
+.tile.colored.current .badge { background: var(--ink); color: var(--fill); border-color: var(--ink); }
+.tile.colored:focus-visible { outline-color: var(--text); }
+
+.name-input {
+  font: inherit; width: 100%; padding: 4px 6px; border-radius: 6px;
+  border: 2px solid var(--accent); background: var(--surface); color: var(--text);
+}
+
+/* "Remove this desk?" on top of a tile */
+.confirm {
+  position: absolute; inset: 0; border-radius: 10px; padding: 8px;
+  background: var(--surface); color: var(--text);
+  display: flex; flex-direction: column; justify-content: center; gap: 6px; text-align: center;
+}
+.confirm .row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+.confirm .danger { background: var(--danger); color: var(--surface); border-color: var(--danger); font-weight: 600; }
+
+.hint, .small { color: var(--muted); font-size: 0.9rem; }
+.status { min-height: 1.4em; margin: 10px 0; font-size: 0.95rem; }
+
+/* ----- Settings ----- */
+.settings { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px; }
+.settings summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
+.settings-body { display: grid; gap: 10px; padding: 8px 0; }
+.settings h2 { font-size: 1rem; margin: 10px 0 0; }
+.switch, .select { display: flex; align-items: center; gap: 8px; }
+.switch input { width: 1.2em; height: 1.2em; }
+.help { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+
+/* ----- Right-click menu ----- */
+.menu {
+  position: fixed; z-index: 20; min-width: 200px; max-height: 80vh; overflow: auto;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px; padding: 4px;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.25);
+}
+.menu [role^="menuitem"] {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  border: 0; border-radius: 6px; background: transparent; text-align: left; padding: 6px 10px;
+}
+.menu [role^="menuitem"]:focus-visible, .menu [role^="menuitem"]:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); outline-offset: -2px; }
+.menu .group { font-size: 0.8rem; color: var(--muted); padding: 6px 10px 2px; }
+.menu .sep { height: 1px; background: var(--border); margin: 4px 0; }
+.swatch {
+  width: 1.4em; height: 1.4em; border-radius: 4px; display: inline-grid; place-items: center;
+  font-size: 0.8em; border: 1px solid var(--border);
+}
+.check { width: 1em; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .tile { transition: border-color 120ms, transform 120ms; }
+}
+
+/* High contrast mode: let ChromeOS choose every colour. */
+@media (forced-colors: active) {
+  .tile, .tile.colored { background: Canvas; color: CanvasText; border-color: CanvasText; forced-color-adjust: none; }
+  .tile.current { border-color: Highlight; }
+  .tile.colored .sub, .sub { color: CanvasText; }
+  .tile .badge { border-color: CanvasText; color: CanvasText; background: Canvas; }
+  .tile.current .badge { background: Highlight; color: HighlightText; }
+}
